@@ -1,12 +1,13 @@
 """
 Árbol Binario de Búsqueda (ABB) simple, sin balanceo.
 
+Características:
 - Inserción: O(h)
 - Búsqueda: O(h)
-- Recorridos y conteo: O(n)
-donde h es la altura; en el peor caso (desbalanceado) h ≈ n.
+- Recorridos (inorden, preorden, postorden): O(n)
+- Conteo de nodos: O(n)
 
-Este archivo sigue PEP 8 (estilo) y PEP 257 (docstrings).
+Donde h es la altura; en el peor caso (árbol desbalanceado) h ≈ n.
 """
 
 from __future__ import annotations
@@ -16,7 +17,7 @@ from ClaseNodo import ClaseNodo
 
 
 class ArbolBinario:
-    """Implementación de un Árbol Binario de Búsqueda sencillo.
+    """Implementación de un Árbol Binario de Búsqueda (ABB).
 
     Invariante:
         Para cualquier nodo:
@@ -29,10 +30,7 @@ class ArbolBinario:
 
     # -------------------- Inserción --------------------
     def insertar(self, valor: int) -> None:
-        """Inserta `valor` preservando el invariante del ABB.
-
-        Si el valor es duplicado, por simplicidad se inserta en el subárbol derecho.
-        """
+        """Inserta un valor en el árbol."""
         self.raiz = self._insertar_recursivo(self.raiz, valor)
 
     def _insertar_recursivo(
@@ -50,7 +48,7 @@ class ArbolBinario:
 
     # -------------------- Búsqueda --------------------
     def buscar(self, valor: int) -> bool:
-        """Retorna True si `valor` existe en el árbol; False en caso contrario."""
+        """Verifica si un valor existe en el árbol."""
         nodo = self.raiz
         while nodo:
             if valor == nodo.valor:
@@ -60,7 +58,7 @@ class ArbolBinario:
 
     # -------------------- Conteo --------------------
     def contar_nodos(self) -> int:
-        """Retorna la cantidad total de nodos del árbol (O(n))."""
+        """Cuenta la cantidad de nodos en el árbol."""
         return self._contar_nodos_recursivo(self.raiz)
 
     def _contar_nodos_recursivo(self, raiz_aux: Optional[ClaseNodo]) -> int:
@@ -75,14 +73,11 @@ class ArbolBinario:
 
     # -------------------- Estado / Propiedades --------------------
     def is_vacio(self) -> bool:
-        """Retorna True si el árbol no contiene nodos."""
+        """Verifica si el árbol está vacío."""
         return self.raiz is None
 
     def altura(self) -> int:
-        """Altura del árbol (número de aristas del camino más largo).
-
-        Un árbol vacío tiene altura -1.
-        """
+        """Calcula la altura del árbol."""
         def _h(n: Optional[ClaseNodo]) -> int:
             if n is None:
                 return -1
@@ -91,7 +86,7 @@ class ArbolBinario:
         return _h(self.raiz)
 
     def minimo(self) -> Optional[int]:
-        """Retorna el valor mínimo del árbol o None si está vacío."""
+        """Obtiene el valor mínimo almacenado en el árbol."""
         n = self.raiz
         if n is None:
             return None
@@ -100,7 +95,7 @@ class ArbolBinario:
         return n.valor
 
     def maximo(self) -> Optional[int]:
-        """Retorna el valor máximo del árbol o None si está vacío."""
+        """Obtiene el valor máximo almacenado en el árbol."""
         n = self.raiz
         if n is None:
             return None
@@ -110,7 +105,7 @@ class ArbolBinario:
 
     # -------------------- Recorridos --------------------
     def inorden(self) -> Generator[int, None, None]:
-        """Genera los valores del árbol en orden ascendente (inorden)."""
+        """Genera los valores del árbol en recorrido inorden (ascendente)."""
         def _in(n: Optional[ClaseNodo]):
             if n:
                 yield from _in(n.izquierdo)
@@ -120,7 +115,7 @@ class ArbolBinario:
         yield from _in(self.raiz)
 
     def preorden(self) -> Generator[int, None, None]:
-        """Genera los valores del árbol en preorden."""
+        """Genera los valores del árbol en recorrido preorden."""
         def _pre(n: Optional[ClaseNodo]):
             if n:
                 yield n.valor
@@ -130,7 +125,7 @@ class ArbolBinario:
         yield from _pre(self.raiz)
 
     def postorden(self) -> Generator[int, None, None]:
-        """Genera los valores del árbol en postorden."""
+        """Genera los valores del árbol en recorrido postorden."""
         def _post(n: Optional[ClaseNodo]):
             if n:
                 yield from _post(n.izquierdo)
@@ -140,8 +135,7 @@ class ArbolBinario:
         yield from _post(self.raiz)
 
     # -------------------- Aliases para compatibilidad --------------------
-    # Mantienen tu API original con estilo no-PEP8.
-    def contarNodos(self) -> int:  # noqa: N802  (nombre heredado)
+    def contarNodos(self) -> int:  # noqa: N802
         """Alias de `contar_nodos()` (compatibilidad con código existente)."""
         return self.contar_nodos()
 
@@ -155,10 +149,13 @@ if __name__ == "__main__":
     for v in (100, 90, 120, 70, 75, 130, 200):
         arbol1.insertar(v)
 
+    print("¿El árbol está vacío?:", arbol1.is_vacio())
     print("Cantidad de nodos:", arbol1.contar_nodos())
-    print("Árbol vacío?:", arbol1.is_vacio())
+    print("Altura del árbol:", arbol1.altura())
+    print("Valor mínimo:", arbol1.minimo())
+    print("Valor máximo:", arbol1.maximo())
+    print("Recorrido inorden (ascendente):", list(arbol1.inorden()))
+    print("Recorrido preorden:", list(arbol1.preorden()))
+    print("Recorrido postorden:", list(arbol1.postorden()))
     print("Buscar 75:", arbol1.buscar(75))
-    print("Altura:", arbol1.altura())
-    print("Mínimo:", arbol1.minimo())
-    print("Máximo:", arbol1.maximo())
-    print("Inorden:", list(arbol1.inorden()))
+    print("Buscar 500:", arbol1.buscar(500))
