@@ -7,9 +7,10 @@ de un Árbol Binario de Búsqueda (ABB).
 
 Características:
 - Compatible con PEP 8 (estilo) y PEP 257 (docstrings).
-- Incluye alias (`izquierdo`, `derecho`) para mantener compatibilidad
-  con implementaciones previas del árbol.
+- Usa atributos directos: hijo_izquierdo, hijo_derecho.
 """
+
+from typing import Optional
 
 
 class ClaseNodo:
@@ -24,36 +25,18 @@ class ClaseNodo:
     def __init__(self, valor: int) -> None:
         """Inicializa un nodo con un valor y sin hijos."""
         self.valor: int = valor
-        self.hijo_izquierdo: "ClaseNodo | None" = None
-        self.hijo_derecho: "ClaseNodo | None" = None
-
-    # ---------------- Compatibilidad con ArbolBinario ----------------
-    @property
-    def izquierdo(self) -> "ClaseNodo | None":
-        """Alias: retorna el hijo izquierdo."""
-        return self.hijo_izquierdo
-
-    @izquierdo.setter
-    def izquierdo(self, nodo: "ClaseNodo | None") -> None:
-        """Alias: asigna el hijo izquierdo."""
-        self.hijo_izquierdo = nodo
-
-    @property
-    def derecho(self) -> "ClaseNodo | None":
-        """Alias: retorna el hijo derecho."""
-        return self.hijo_derecho
-
-    @derecho.setter
-    def derecho(self, nodo: "ClaseNodo | None") -> None:
-        """Alias: asigna el hijo derecho."""
-        self.hijo_derecho = nodo
+        self.hijo_izquierdo: Optional["ClaseNodo"] = None
+        self.hijo_derecho: Optional["ClaseNodo"] = None
 
     # ---------------- Métodos útiles ----------------
     def es_hoja(self) -> bool:
         """Indica si el nodo es una hoja (no tiene hijos)."""
         return self.hijo_izquierdo is None and self.hijo_derecho is None
 
+    def tiene_un_hijo(self) -> bool:
+        """Indica si el nodo tiene exactamente un hijo."""
+        return (self.hijo_izquierdo is None) ^ (self.hijo_derecho is None)
+
     def __repr__(self) -> str:
         """Representación en cadena del nodo, útil para depuración."""
         return f"ClaseNodo(valor={self.valor})"
-
