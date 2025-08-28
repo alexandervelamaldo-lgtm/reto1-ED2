@@ -1,74 +1,66 @@
-from __future__ import annotations
-from typing import Optional, List
+class Nodo:
+    """
+    Clase que representa un nodo de un árbol binario.
 
-from ClaseNodo import ClaseNodo
+    Atributos:
+        valor (int): valor almacenado en el nodo.
+        hijo_izquierdo (Nodo | None): referencia al hijo izquierdo.
+        hijo_derecho (Nodo | None): referencia al hijo derecho.
+    """
+
+    def __init__(self, valor: int) -> None:
+        """Inicializa un nodo con un valor y sin hijos."""
+        self.valor: int = valor
+        self.hijo_izquierdo: Nodo | None = None
+        self.hijo_derecho: Nodo | None = None
+
+    def __repr__(self) -> str:
+        """Devuelve una representación en cadena del nodo."""
+        return f"Nodo({self.valor})"
 
 
 class ArbolBinario:
     """
-    Representa un Árbol Binario de Búsqueda (ABB).
+    Implementación de un Árbol Binario de Búsqueda (ABB) sin balanceo.
 
-    Permite insertar valores, buscar nodos y recorrer el árbol
-    en diferentes órdenes (inorden, preorden, postorden).
-    Incluye implementaciones recursivas e iterativas.
+    Métodos implementados en forma recursiva e iterativa:
+    - InsertarNodo(x)
+    - EsVacio()
+    - EsHoja()
+    - BuscarX()
+    - InOrden()
+    - PostOrden()
+    - PreOrden()
     """
 
     def __init__(self) -> None:
-        """Inicializa un árbol vacío."""
-        self.raiz: Optional[ClaseNodo] = None
+        """Crea un árbol vacío."""
+        self.raiz: Nodo | None = None
 
     # -------------------- Insertar --------------------
-    def InsertarNodo(self, x: int) -> None:
-        """
-        Inserta un valor en el árbol de forma recursiva.
+    def insertar_nodo_recursivo(self, valor: int) -> None:
+        """Inserta un valor en el árbol de forma recursiva."""
 
-        Args:
-            x (int): Valor a insertar.
-        """
-        self.raiz = self._insertar_recursivo(self.raiz, x)
+        def _insertar(raiz: Nodo | None, valor: int) -> Nodo:
+            if raiz is None:
+                return Nodo(valor)
+            if valor < raiz.valor:
+                raiz.hijo_izquierdo = _insertar(raiz.hijo_izquierdo, valor)
+            else:
+                raiz.hijo_derecho = _insertar(raiz.hijo_derecho, valor)
+            return raiz
 
-    def _insertar_recursivo(
-        self,
-        nodo: Optional[ClaseNodo],
-        x: int
-    ) -> ClaseNodo:
-        """
-        Inserta un valor en el subárbol recursivamente.
+        self.raiz = _insertar(self.raiz, valor)
 
-        Args:
-            nodo (ClaseNodo | None): Nodo actual.
-            x (int): Valor a insertar.
-
-        Returns:
-            ClaseNodo: Nodo actualizado.
-        """
-        if nodo is None:
-            return ClaseNodo(x)
-        if x < nodo.valor:
-            nodo.hijo_izquierdo = self._insertar_recursivo(
-                nodo.hijo_izquierdo, x
-            )
-        else:
-            nodo.hijo_derecho = self._insertar_recursivo(
-                nodo.hijo_derecho, x
-            )
-        return nodo
-
-    def InsertarNodoIterativo(self, x: int) -> None:
-        """
-        Inserta un valor en el árbol de forma iterativa.
-
-        Args:
-            x (int): Valor a insertar.
-        """
-        nuevo = ClaseNodo(x)
+    def insertar_nodo_iterativo(self, valor: int) -> None:
+        """Inserta un valor en el árbol de forma iterativa."""
+        nuevo = Nodo(valor)
         if self.raiz is None:
             self.raiz = nuevo
             return
-
         actual = self.raiz
         while True:
-            if x < actual.valor:
+            if valor < actual.valor:
                 if actual.hijo_izquierdo is None:
                     actual.hijo_izquierdo = nuevo
                     break
@@ -80,114 +72,58 @@ class ArbolBinario:
                 actual = actual.hijo_derecho
 
     # -------------------- Estado --------------------
-    def EsVacio(self) -> bool:
-        """
-        Verifica si el árbol está vacío.
-
-        Returns:
-            bool: True si el árbol no tiene nodos.
-        """
+    def es_vacio(self) -> bool:
+        """Verifica si el árbol está vacío."""
         return self.raiz is None
 
-    def EsHoja(self, nodo: ClaseNodo) -> bool:
-        """
-        Verifica si un nodo es hoja.
-
-        Args:
-            nodo (ClaseNodo): Nodo a verificar.
-
-        Returns:
-            bool: True si el nodo no tiene hijos.
-        """
+    def es_hoja(self, nodo: Nodo) -> bool:
+        """Verifica si un nodo es hoja."""
         return nodo.hijo_izquierdo is None and nodo.hijo_derecho is None
 
-    # -------------------- Búsqueda --------------------
-    def BuscarX(self, x: int) -> bool:
-        """
-        Busca un valor en el árbol de forma recursiva.
+    # -------------------- Buscar --------------------
+    def buscar_recursivo(self, valor: int) -> bool:
+        """Busca un valor en el árbol de forma recursiva."""
 
-        Args:
-            x (int): Valor a buscar.
+        def _buscar(nodo: Nodo | None, valor: int) -> bool:
+            if nodo is None:
+                return False
+            if valor == nodo.valor:
+                return True
+            if valor < nodo.valor:
+                return _buscar(nodo.hijo_izquierdo, valor)
+            return _buscar(nodo.hijo_derecho, valor)
 
-        Returns:
-            bool: True si el valor está en el árbol.
-        """
-        return self._buscar_recursivo(self.raiz, x)
+        return _buscar(self.raiz, valor)
 
-    def _buscar_recursivo(
-        self,
-        nodo: Optional[ClaseNodo],
-        x: int
-    ) -> bool:
-        """
-        Busca un valor en un subárbol recursivamente.
-
-        Args:
-            nodo (ClaseNodo | None): Nodo actual.
-            x (int): Valor a buscar.
-
-        Returns:
-            bool: True si el valor está en el subárbol.
-        """
-        if nodo is None:
-            return False
-        if nodo.valor == x:
-            return True
-        if x < nodo.valor:
-            return self._buscar_recursivo(nodo.hijo_izquierdo, x)
-        return self._buscar_recursivo(nodo.hijo_derecho, x)
-
-    def BuscarXIterativo(self, x: int) -> bool:
-        """
-        Busca un valor en el árbol de forma iterativa.
-
-        Args:
-            x (int): Valor a buscar.
-
-        Returns:
-            bool: True si el valor está en el árbol.
-        """
+    def buscar_iterativo(self, valor: int) -> bool:
+        """Busca un valor en el árbol de forma iterativa."""
         actual = self.raiz
         while actual:
-            if actual.valor == x:
+            if valor == actual.valor:
                 return True
-            actual = (
-                actual.hijo_izquierdo
-                if x < actual.valor
-                else actual.hijo_derecho
-            )
+            if valor < actual.valor:
+                actual = actual.hijo_izquierdo
+            else:
+                actual = actual.hijo_derecho
         return False
 
     # -------------------- Recorridos --------------------
-    def InOrden(self) -> List[int]:
-        """
-        Recorre el árbol en inorden de forma recursiva.
-
-        Returns:
-            List[int]: Valores en orden ascendente.
-        """
-        resultado: List[int] = []
-
-        def _in(nodo: Optional[ClaseNodo]) -> None:
+    def inorden_recursivo(self) -> list[int]:
+        """Devuelve los valores en recorrido inorden de forma recursiva."""
+        def _in(nodo: Nodo | None, res: list[int]) -> None:
             if nodo:
-                _in(nodo.hijo_izquierdo)
-                resultado.append(nodo.valor)
-                _in(nodo.hijo_derecho)
-
-        _in(self.raiz)
+                _in(nodo.hijo_izquierdo, res)
+                res.append(nodo.valor)
+                _in(nodo.hijo_derecho, res)
+        resultado: list[int] = []
+        _in(self.raiz, resultado)
         return resultado
 
-    def InOrdenIterativo(self) -> List[int]:
-        """
-        Recorre el árbol en inorden de forma iterativa.
-
-        Returns:
-            List[int]: Valores en orden ascendente.
-        """
-        resultado: List[int] = []
-        pila: List[ClaseNodo] = []
+    def inorden_iterativo(self) -> list[int]:
+        """Devuelve los valores en recorrido inorden de forma iterativa."""
+        resultado: list[int] = []
+        pila: list[Nodo] = []
         actual = self.raiz
-
         while pila or actual:
             while actual:
                 pila.append(actual)
@@ -195,40 +131,25 @@ class ArbolBinario:
             actual = pila.pop()
             resultado.append(actual.valor)
             actual = actual.hijo_derecho
-
         return resultado
 
-    def PreOrden(self) -> List[int]:
-        """
-        Recorre el árbol en preorden de forma recursiva.
-
-        Returns:
-            List[int]: Valores visitados en preorden.
-        """
-        resultado: List[int] = []
-
-        def _pre(nodo: Optional[ClaseNodo]) -> None:
+    def preorden_recursivo(self) -> list[int]:
+        """Devuelve los valores en recorrido preorden de forma recursiva."""
+        def _pre(nodo: Nodo | None, res: list[int]) -> None:
             if nodo:
-                resultado.append(nodo.valor)
-                _pre(nodo.hijo_izquierdo)
-                _pre(nodo.hijo_derecho)
-
-        _pre(self.raiz)
+                res.append(nodo.valor)
+                _pre(nodo.hijo_izquierdo, res)
+                _pre(nodo.hijo_derecho, res)
+        resultado: list[int] = []
+        _pre(self.raiz, resultado)
         return resultado
 
-    def PreOrdenIterativo(self) -> List[int]:
-        """
-        Recorre el árbol en preorden de forma iterativa.
-
-        Returns:
-            List[int]: Valores visitados en preorden.
-        """
-        if self.raiz is None:
+    def preorden_iterativo(self) -> list[int]:
+        """Devuelve los valores en recorrido preorden de forma iterativa."""
+        if not self.raiz:
             return []
-
-        resultado: List[int] = []
-        pila: List[ClaseNodo] = [self.raiz]
-
+        resultado: list[int] = []
+        pila: list[Nodo] = [self.raiz]
         while pila:
             nodo = pila.pop()
             resultado.append(nodo.valor)
@@ -236,41 +157,26 @@ class ArbolBinario:
                 pila.append(nodo.hijo_derecho)
             if nodo.hijo_izquierdo:
                 pila.append(nodo.hijo_izquierdo)
-
         return resultado
 
-    def PostOrden(self) -> List[int]:
-        """
-        Recorre el árbol en postorden de forma recursiva.
-
-        Returns:
-            List[int]: Valores visitados en postorden.
-        """
-        resultado: List[int] = []
-
-        def _post(nodo: Optional[ClaseNodo]) -> None:
+    def postorden_recursivo(self) -> list[int]:
+        """Devuelve los valores en recorrido postorden de forma recursiva."""
+        def _post(nodo: Nodo | None, res: list[int]) -> None:
             if nodo:
-                _post(nodo.hijo_izquierdo)
-                _post(nodo.hijo_derecho)
-                resultado.append(nodo.valor)
-
-        _post(self.raiz)
+                _post(nodo.hijo_izquierdo, res)
+                _post(nodo.hijo_derecho, res)
+                res.append(nodo.valor)
+        resultado: list[int] = []
+        _post(self.raiz, resultado)
         return resultado
 
-    def PostOrdenIterativo(self) -> List[int]:
-        """
-        Recorre el árbol en postorden de forma iterativa.
-
-        Returns:
-            List[int]: Valores visitados en postorden.
-        """
-        if self.raiz is None:
+    def postorden_iterativo(self) -> list[int]:
+        """Devuelve los valores en recorrido postorden de forma iterativa."""
+        if not self.raiz:
             return []
-
-        resultado: List[int] = []
-        pila1: List[ClaseNodo] = [self.raiz]
-        pila2: List[ClaseNodo] = []
-
+        resultado: list[int] = []
+        pila1: list[Nodo] = [self.raiz]
+        pila2: list[Nodo] = []
         while pila1:
             nodo = pila1.pop()
             pila2.append(nodo)
@@ -278,25 +184,22 @@ class ArbolBinario:
                 pila1.append(nodo.hijo_izquierdo)
             if nodo.hijo_derecho:
                 pila1.append(nodo.hijo_derecho)
-
         while pila2:
             resultado.append(pila2.pop().valor)
-
         return resultado
 
 
-# -------------------- Prueba rápida --------------------
 if __name__ == "__main__":
     arbol = ArbolBinario()
     for v in (100, 90, 120, 70, 75, 130, 200):
-        arbol.InsertarNodo(v)
+        arbol.insertar_nodo_recursivo(v)
 
-    print("¿Árbol vacío?:", arbol.EsVacio())
-    print("Buscar 75 (rec):", arbol.BuscarX(75))
-    print("Buscar 500 (iter):", arbol.BuscarXIterativo(500))
-    print("InOrden rec:", arbol.InOrden())
-    print("InOrden iter:", arbol.InOrdenIterativo())
-    print("PreOrden rec:", arbol.PreOrden())
-    print("PreOrden iter:", arbol.PreOrdenIterativo())
-    print("PostOrden rec:", arbol.PostOrden())
-    print("PostOrden iter:", arbol.PostOrdenIterativo())
+    print("¿Árbol vacío?:", arbol.es_vacio())
+    print("Buscar recursivo 75:", arbol.buscar_recursivo(75))
+    print("Buscar iterativo 500:", arbol.buscar_iterativo(500))
+    print("InOrden recursivo:", arbol.inorden_recursivo())
+    print("InOrden iterativo:", arbol.inorden_iterativo())
+    print("PreOrden recursivo:", arbol.preorden_recursivo())
+    print("PreOrden iterativo:", arbol.preorden_iterativo())
+    print("PostOrden recursivo:", arbol.postorden_recursivo())
+    print("PostOrden iterativo:", arbol.postorden_iterativo())
