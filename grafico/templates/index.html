@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Árboles Binarios</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Visualizador de Árboles Binarios</h1>
+        
+        <div class="controls">
+            <div class="input-group">
+                <input type="number" id="valorInput" placeholder="Ingrese un valor">
+                <button onclick="insertarValor()">Insertar</button>
+                <button onclick="eliminarValor()">Eliminar</button>
+                <select id="tipoArbol">
+                    <option value="abb">Árbol Binario (ABB)</option>
+                    <option value="avl">Árbol AVL</option>
+                </select>
+            </div>
+            
+            <div class="actions">
+                <button onclick="realizarRecorrido('inorden')">InOrden</button>
+                <button onclick="realizarRecorrido('preorden')">PreOrden</button>
+                <button onclick="realizarRecorrido('postorden')">PostOrden</button>
+                <button onclick="realizarRecorrido('amplitud')">Amplitud</button>
+                <button onclick="limpiarArbol()">Limpiar Árbol</button>
+            </div>
+        </div>
+        
+        <div class="info">
+            <div id="mensaje"></div>
+            <div id="recorridoResultado"></div>
+        </div>
+        
+        <div class="canvas-container">
+            <canvas id="treeCanvas" width="800" height="600"></canvas>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='tree.js') }}"></script>
+</body>
+</html>
